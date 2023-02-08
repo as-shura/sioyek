@@ -115,11 +115,11 @@ bool range_intersects(float range1_start, float range1_end, float range2_start, 
 bool rects_intersect(fz_rect rect1, fz_rect rect2) {
 	return range_intersects(rect1.x0, rect1.x1, rect2.x0, rect2.x1) && range_intersects(rect1.y0, rect1.y1, rect2.y0, rect2.y1);
 }
-
+/*
 ParsedUri parse_uri(fz_context* mupdf_context, std::string uri) {
 	fz_link_dest dest = pdf_parse_link_uri(mupdf_context, uri.c_str());
 	return { dest.loc.page + 1, dest.x, dest.y };
-}
+}*/
 
 char get_symbol(int key, bool is_shift_pressed, const std::vector<char>& special_symbols) {
 
@@ -809,7 +809,7 @@ void split_key_string(std::wstring haystack, const std::wstring& needle, std::ve
 	}
 }
 
-
+/*
 void run_command(std::wstring command, QStringList parameters, bool wait){
 
 
@@ -869,6 +869,7 @@ void run_command(std::wstring command, QStringList parameters, bool wait){
 
 }
 
+*/
 
 void open_file_url(const QString& url_string) {
 	QDesktopServices::openUrl(QUrl::fromLocalFile(url_string));
