@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.8.2)
 
-project(sioyek VERSION 1.0.0)
+project(sioyek VERSION 2.0.0)
 
 # Find includes in the build directories
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -19,12 +19,17 @@ set(CMAKE_AUTORCC ON)
 #endif(NOT CMAKE_PREFIX_PATH AND NOT Qt5Widgets_DIR)
 find_package(libmupdf CONFIG REQUIRED)
 # Add a compiler flag
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
+if(MSVC)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++17")
+else()
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
+endif()
 
 # Find the QtWidgets library
-find_package(Qt5 REQUIRED COMPONENTS Core Gui Widgets Network)
+find_package(Qt5 REQUIRED COMPONENTS Core OpenGL Gui Widgets Network 3DInput OpenGLExtensions) #)
 find_package(ZLIB REQUIRED)
 find_package(libmupdf CONFIG REQUIRED)
+find_package(unofficial-sqlite3 CONFIG REQUIRED)
 
 file(GLOB HEADERS ${PROJECT_SOURCE_DIR}/src/*.cpp)
 file(GLOB SRCS ${PROJECT_SOURCE_DIR}/include/*.cpp)
@@ -34,4 +39,21 @@ add_executable(sioyek ${SRCS} ${HEADERS})
 
 include_directories(include)
 # Add the Qt5 Widgets for linking
-target_link_libraries(sioyek Qt5::Core Qt5::Gui Qt5::Widgets Qt5::Network ZLIB::ZLIB libmupdf::libmupdf)
+target_link_libraries(sioyek 
+    Qt5::Core
+    Qt5::OpenGL
+    Qt5::Gui
+    Qt5::Widgets
+    Qt5::Network
+    Qt5::3DInput
+    Qt5::OpenGLExtensions
+    ZLIB::ZLIB
+    libmupdf::libmupdf
+    unofficial::sqlite3::sqlite3
+)
+
+target_compile_definitions(sioyek PRIVATE QT_3DINPUT_LIB QT_OPENGL_LIB QT_OPENGLEXTENSIONS_LIB QT_WIDGETS_LIB)
+
+if(WIN32)
+    target_compile_definitions(sioyek PRIVATE _CRT_SECURE_NO_WARNINGS _CRT_NONSTDC_NO_DEPRECATE)
+endif()
