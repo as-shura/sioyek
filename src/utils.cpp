@@ -115,11 +115,11 @@ bool range_intersects(float range1_start, float range1_end, float range2_start, 
 bool rects_intersect(fz_rect rect1, fz_rect rect2) {
 	return range_intersects(rect1.x0, rect1.x1, rect2.x0, rect2.x1) && range_intersects(rect1.y0, rect1.y1, rect2.y0, rect2.y1);
 }
-/*
+
 ParsedUri parse_uri(fz_context* mupdf_context, std::string uri) {
 	fz_link_dest dest = pdf_parse_link_uri(mupdf_context, uri.c_str());
 	return { dest.loc.page + 1, dest.x, dest.y };
-}*/
+}
 
 char get_symbol(int key, bool is_shift_pressed, const std::vector<char>& special_symbols) {
 
@@ -809,13 +809,12 @@ void split_key_string(std::wstring haystack, const std::wstring& needle, std::ve
 	}
 }
 
-/*
 void run_command(std::wstring command, QStringList parameters, bool wait){
 
 
 #ifdef Q_OS_WIN
 	std::wstring parameters_string = parameters.join(" ").toStdWString();
-	SHELLEXECUTEINFO ShExecInfo = { 0 };
+	SHELLEXECUTEINFOW ShExecInfo = { 0 };
 	ShExecInfo.cbSize = sizeof(SHELLEXECUTEINFO);
 	if (wait) {
 		ShExecInfo.fMask = SEE_MASK_NOCLOSEPROCESS;
@@ -826,12 +825,12 @@ void run_command(std::wstring command, QStringList parameters, bool wait){
 
 	ShExecInfo.hwnd = NULL;
 	ShExecInfo.lpVerb = NULL;
-	ShExecInfo.lpFile = command.c_str();
+	ShExecInfo.lpFile = (LPCWSTR)command.c_str();
 	ShExecInfo.lpParameters = NULL;
 	ShExecInfo.lpDirectory = NULL;
 	ShExecInfo.nShow = SW_HIDE;
 	ShExecInfo.hInstApp = NULL;
-	ShExecInfo.lpParameters = parameters_string.c_str();
+	ShExecInfo.lpParameters = (LPCWSTR)parameters_string.c_str();
 
 	ShellExecuteExW(&ShExecInfo);
 	if (wait) {
@@ -868,8 +867,6 @@ void run_command(std::wstring command, QStringList parameters, bool wait){
 #endif
 
 }
-
-*/
 
 void open_file_url(const QString& url_string) {
 	QDesktopServices::openUrl(QUrl::fromLocalFile(url_string));

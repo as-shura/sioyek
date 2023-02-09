@@ -17,7 +17,7 @@ set(CMAKE_AUTORCC ON)
 #            "environment variable to the install prefix of Qt 5, either on the command line as "
 #            "-DCMAKE_PREFIX_PATH=\"path/to/Qt5/lib/cmake\" or with set(CMAKE_PREFIX_PATH path/to/Qt5/lib/cmake)")
 #endif(NOT CMAKE_PREFIX_PATH AND NOT Qt5Widgets_DIR)
-find_package(libmupdf CONFIG REQUIRED)
+
 # Add a compiler flag
 if(MSVC)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++17")
@@ -29,15 +29,21 @@ endif()
 find_package(Qt5 REQUIRED COMPONENTS Core OpenGL Gui Widgets Network 3DInput OpenGLExtensions) #)
 find_package(ZLIB REQUIRED)
 find_package(libmupdf CONFIG REQUIRED)
+find_package(libresources CONFIG REQUIRED)
 find_package(unofficial-sqlite3 CONFIG REQUIRED)
+find_package(unofficial-gumbo CONFIG REQUIRED)
+find_package(Freetype REQUIRED)
 
-file(GLOB HEADERS ${PROJECT_SOURCE_DIR}/src/*.cpp)
-file(GLOB SRCS ${PROJECT_SOURCE_DIR}/include/*.cpp)
+file(GLOB HEADERS ${PROJECT_SOURCE_DIR}/include/*.h ${PROJECT_SOURCE_DIR}/include/*.hpp)
+file(GLOB SRCS ${PROJECT_SOURCE_DIR}/src/*.cpp)
+
+file(GLOB SYNC_HEADERS ${PROJECT_SOURCE_DIR}/synctex/*.h)
+file(GLOB SYNC_SRCS ${PROJECT_SOURCE_DIR}/synctex/*.c)
 
 # Tell CMake to create the helloworld executable
-add_executable(sioyek ${SRCS} ${HEADERS})
+add_executable(sioyek ${SRCS} ${HEADERS} ${SYNC_SRCS} ${SYNC_HEADERS})
 
-include_directories(include)
+target_include_directories(sioyek PUBLIC include)
 # Add the Qt5 Widgets for linking
 target_link_libraries(sioyek 
     Qt5::Core
@@ -48,8 +54,12 @@ target_link_libraries(sioyek
     Qt5::3DInput
     Qt5::OpenGLExtensions
     ZLIB::ZLIB
-    libmupdf::libmupdf
+    unofficial::libmupdf::libmupdf
     unofficial::sqlite3::sqlite3
+    unofficial::gumbo::gumbo
+    Freetype::Freetype
+    unofficial::libresources::libresources
+    opengl32.lib
 )
 
 target_compile_definitions(sioyek PRIVATE QT_3DINPUT_LIB QT_OPENGL_LIB QT_OPENGLEXTENSIONS_LIB QT_WIDGETS_LIB)
